@@ -25,12 +25,11 @@ Ext.define("PiAncestorFilterBroadcaster", {
         }
     },
 
-    changeSubscribers: [],
-
     launch: function() {
         this.ancestorFilterPlugin = Ext.create('Utils.AncestorPiAppFilter', {
             ptype: 'UtilsAncestorPiAppFilter',
             pluginId: 'ancestorFilterPlugin',
+            publisher: true,
             settingsConfig: {
                 labelWidth: 150,
                 margin: 10
@@ -50,23 +49,13 @@ Ext.define("PiAncestorFilterBroadcaster", {
         });
         this.addPlugin(this.ancestorFilterPlugin);
 
-        this.subscribe(this, 'registerChangeSubscriber', function(subscriberName) {
-            this.changeSubscribers.push(subscriberName)
-            this.publish(subscriberName, this.ancestorFilterPlugin.getValue());
-        }, this);
+
     },
 
     onTimeboxScopeChange: function(timebox) {
         this.callParent(arguments);
         this._runApp();
     },
-
-    _notifySubscribers: function(data) {
-        _.each(this.changeSubscribers, function(subscriberName) {
-            this.publish(subscriberName, data);
-        }, this);
-    },
-
 
     // There is a subtle  bug on timebox
     // scoped pages where the milestone timebox is not correctly restored after a settings change.
@@ -98,7 +87,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             };
         }
         */
-        this._notifySubscribers(this.ancestorFilterPlugin.getValue());
+        this.ancestorFilterPlugin.notifySubscribers();
     },
 
     isMilestoneScoped: function() {
