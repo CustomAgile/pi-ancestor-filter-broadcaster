@@ -10,13 +10,6 @@ Ext.define("PiAncestorFilterBroadcaster", {
             align: 'middle',
             defaultMargins: '0 10 10 0',
         }
-    }, {
-        xtype: 'rallybutton',
-        style: { 'float': 'right' },
-        cls: 'secondary rly-small',
-        frame: false,
-        itemId: 'export-menu-button',
-        iconCls: 'icon-export'
     }],
 
     config: {
