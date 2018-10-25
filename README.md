@@ -2,6 +2,8 @@
 This app broadcasts a set of filter options so that one set of selections
 can control multiple apps on a page.
 
+![screenshot](./screenshot.png)
+
 ### First Load
 
 If you've just downloaded this from github and you want to do development,

@@ -1,4 +1,3 @@
-.DS_Store
 .grunt/
 grunt/
 /node_modules/
@@ -6,9 +5,7 @@ auth.json
 App-debug.html
 _SpecRunner.html
 /test/logs/
-deploy/
--deploy/Ugly.txt
 .project
 .settings
-deploy/ConfluenceApp.txt
-deploy/ExternalApp.txt
+deploy/*
+!deploy/Ugly.txt
