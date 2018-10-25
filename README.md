@@ -1,6 +1,7 @@
 # pi-ancestor-filter-broadcaster
 This app broadcasts a set of filter options so that one set of selections
-can control multiple apps on a page.
+can control multiple apps on a page. For examples of listeners, see
+[utils-ancestor-pi-app-filter](https://github.com/RallyTechServices/utils-ancestor-pi-app-filter)
 
 ![screenshot](./screenshot.png)
 
