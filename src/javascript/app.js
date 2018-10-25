@@ -32,11 +32,9 @@ Ext.define("PiAncestorFilterBroadcaster", {
                 ready: function(plugin) {
                     plugin.addListener({
                         scope: this,
-                        select: function() {
-                            this._runApp();
-                        }
+                        select: this._notifySubscribers
                     });
-                    this._runApp();
+                    this._notifySubscribers()
                 },
             }
         });
@@ -45,69 +43,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
 
     },
 
-    onTimeboxScopeChange: function(timebox) {
-        this.callParent(arguments);
-        this._runApp();
-    },
-
-    // There is a subtle  bug on timebox
-    // scoped pages where the milestone timebox is not correctly restored after a settings change.
-    // 1. Set page as milestone timebox scoped
-    // 2. Pick a non-null milestone timebox
-    // 3. Open app settings and save (no change needed)
-    // 4. Timebox will be 'milestone' in the window.location.href instead of 'milestone/12345'.
-    // See getSdkInfo() in the SDK for how the timebox is restored.
-    // This only seems to occur the first time after the page is made timebox scoped and goes away once
-    // the page is reloaded once.
-    _runApp: function() {
-        var timeboxScope = this.getContext().getTimeboxScope()
-
-        var filters = null;
-
-        if (timeboxScope) {
-            filters = timeboxScope.getQueryFilter();
-        }
-        /*
-        var artifactType; // TODO
-        var ancestorFilter = this.getPlugin('ancestorFilterPlugin').getFilterForType(artifactType);
-        if (ancestorFilter) {
-            filters = filters.and(ancestorFilter);
-        }
-        var config = {};
-        if (this.searchAllProjects()) {
-            config.context = {
-                project: null
-            };
-        }
-        */
+    _notifySubscribers: function() {
         this.ancestorFilterPlugin.notifySubscribers();
-    },
-
-    isMilestoneScoped: function() {
-        var result = false;
-
-        var tbscope = this.getContext().getTimeboxScope();
-        if (tbscope && tbscope.getType() == 'milestone') {
-            result = true;
-        }
-        return result
-    },
-
-    searchAllProjects: function() {
-        var searchAllProjects = this.getSetting('searchAllProjects');
-        return this.isMilestoneScoped() && searchAllProjects;
-    },
-
-    getSettingsFields: function() {
-        return [{
-            id: 'searchAllProjects',
-            name: 'searchAllProjects',
-            fieldLabel: 'Scope Across Workspace',
-            labelAlign: 'left',
-            xtype: 'rallycheckboxfield',
-            labelWidth: 150,
-            margin: 10,
-            hidden: !this.isMilestoneScoped()
-        }]
     }
 });
