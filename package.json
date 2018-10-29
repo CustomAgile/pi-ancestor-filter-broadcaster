@@ -8,9 +8,7 @@
     "deploy-pretty:watch": "nodemon --exec grunt deploy-pretty",
     "deploy-debugsdk:watch": "nodemon --exec grunt deploy-debugsdk"
   },
-  "dependencies": {
-    "@agile-central-technical-services/utils-ancestor-pi-app-filter": "^2.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-cli": "0.1.6",
