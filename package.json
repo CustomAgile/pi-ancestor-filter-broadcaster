@@ -1,6 +1,6 @@
 {
   "name": "pi-ancestor-filter-broadcaster",
-  "version": "1.0.2-0",
+  "version": "1.0.2",
   "scripts": {
     "debug": "grunt debug",
     "debug:watch": "nodemon --exec grunt debug",
