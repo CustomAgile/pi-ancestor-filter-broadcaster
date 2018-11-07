@@ -4,12 +4,6 @@ Ext.define("PiAncestorFilterBroadcaster", {
     items: [{
         id: Utils.AncestorPiAppFilter.RENDER_AREA_ID,
         xtype: 'container',
-        flex: 1,
-        layout: {
-            type: 'hbox',
-            align: 'middle',
-            defaultMargins: '0 10 10 0',
-        }
     }],
 
     config: {
@@ -24,7 +18,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             pluginId: 'ancestorFilterPlugin',
             publisher: true,
             settingsConfig: {
-                labelWidth: 150,
+                labelWidth: 200,
                 margin: 10
             },
             listeners: {
@@ -45,5 +39,16 @@ Ext.define("PiAncestorFilterBroadcaster", {
 
     _notifySubscribers: function() {
         this.ancestorFilterPlugin.notifySubscribers();
+    },
+
+    /**
+     * Must return a non-zero list of settings to allow the ancestorFilter plugin to
+     * insert its settings. The SDK decides if an app should have a settings menu option
+     * *before* initializing app plugins created in app.launch()
+     */
+    getSettingsFields: function() {
+        return [{
+            xtype: 'container'
+        }]
     }
 });
