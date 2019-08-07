@@ -9,4 +9,4 @@ _SpecRunner.html
 .project
 .settings
 deploy/*
-!deploy/Ugly.txt
+!deploy/App.txt
