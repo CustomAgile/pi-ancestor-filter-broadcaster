@@ -10,3 +10,4 @@ _SpecRunner.html
 .settings
 deploy/*
 !deploy/App.txt
+.DS_Store

@@ -10,6 +10,14 @@ Ext.define("PiAncestorFilterBroadcaster", {
             defaultMargins: '0 10 10 0',
         }
     }, {
+        id: 'applyFilterBtnContainer',
+        xtype: 'container',
+        layout: {
+            type: 'hbox',
+            align: 'middle',
+            defaultMargins: '0 10 10 0',
+        }
+    }, {
         id: Utils.AncestorPiAppFilter.PANEL_RENDER_AREA_ID,
         xtype: 'container',
         layout: {
@@ -29,6 +37,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
         this.ancestorFilterPlugin = Ext.create('Utils.AncestorPiAppFilter', {
             ptype: 'UtilsAncestorPiAppFilter',
             pluginId: 'ancestorFilterPlugin',
+            btnRenderAreaId: 'applyFilterBtnContainer',
             publisher: true,
             filtersHidden: false,
             settingsConfig: {
@@ -41,8 +50,18 @@ Ext.define("PiAncestorFilterBroadcaster", {
                     plugin.addListener({
                         scope: this,
                         select: function () { this._notifySubscribers('ancestor'); },
-                        change: function () { this._notifySubscribers('filters'); }
+                        change: this._onFilterChange
                     });
+
+                    this.down('#applyFilterBtnContainer').add({
+                        xtype: 'rallybutton',
+                        itemId: 'applyFiltersBtn',
+                        handler: this._applyFilters,
+                        text: 'Apply filters to apps',
+                        cls: 'apply-filters-button',
+                        disabled: true
+                    });
+
                     this._notifySubscribers('ancestor');
                 },
             }
@@ -52,6 +71,15 @@ Ext.define("PiAncestorFilterBroadcaster", {
 
     _notifySubscribers: function (changeType) {
         this.ancestorFilterPlugin.notifySubscribers(changeType);
+    },
+
+    _onFilterChange: function () {
+        this.down('#applyFiltersBtn').setDisabled(false);
+    },
+
+    _applyFilters: function (btn) {
+        btn.setDisabled(true);
+        Rally.getApp()._notifySubscribers('filters');
     },
 
     /**
