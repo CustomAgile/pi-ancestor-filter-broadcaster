@@ -40,6 +40,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             btnRenderAreaId: 'applyFilterBtnContainer',
             publisher: true,
             filtersHidden: false,
+            whiteListFields: ['Milestones', 'Tags', 'c_EnterpriseApprovalEA'],
             settingsConfig: {
                 labelWidth: 200,
                 margin: 10
