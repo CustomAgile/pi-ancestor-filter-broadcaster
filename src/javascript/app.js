@@ -38,6 +38,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             ptype: 'UtilsAncestorPiAppFilter',
             pluginId: 'ancestorFilterPlugin',
             btnRenderAreaId: 'applyFilterBtnContainer',
+            visibleTab: this.getSetting('defaultTab') || '',
             publisher: true,
             filtersHidden: false,
             whiteListFields: ['Milestones', 'Tags', 'c_EnterpriseApprovalEA'],
@@ -89,8 +90,42 @@ Ext.define("PiAncestorFilterBroadcaster", {
      * *before* initializing app plugins created in app.launch()
      */
     getSettingsFields: function () {
+        let filter = new Rally.data.wsapi.Filter({
+            property: 'TypePath',
+            operator: 'contains',
+            value: 'PortfolioItem'
+        });
+        filter = filter.or(new Rally.data.wsapi.Filter({
+            property: 'TypePath',
+            value: 'HierarchicalRequirement'
+        }));
+        filter = filter.and(new Rally.data.wsapi.Filter({
+            property: 'UserListable',
+            value: true
+        }));
         return [{
-            xtype: 'container'
+            name: 'defaultTab',
+            xtype: 'rallycombobox',
+            allowBlank: false,
+            editable: false,
+            autoSelect: false,
+            validateOnChange: false,
+            validateOnBlur: false,
+            fieldLabel: 'Default Active Filter Tab',
+            margin: 10,
+            labelWidth: 200,
+            storeConfig: {
+                model: 'TypeDefinition',
+                sorters: [{ property: 'Ordinal', direction: 'DESC' }],
+                fetch: ['DisplayName', 'TypePath'],
+                filters: filter,
+                autoLoad: false,
+                remoteSort: true,
+                sortOnLoad: true,
+                remoteFilter: true
+            },
+            displayField: 'DisplayName',
+            valueField: 'TypePath'
         }];
     }
 });
