@@ -41,7 +41,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             visibleTab: this.getSetting('defaultTab') || '',
             publisher: true,
             filtersHidden: false,
-            whiteListFields: ['Milestones', 'Tags', 'c_EnterpriseApprovalEA'],
+            whiteListFields: ['Milestones', 'Tags', 'c_EnterpriseApprovalEA', 'c_EAEpic'],
             settingsConfig: {
                 labelWidth: 200,
                 margin: 10
