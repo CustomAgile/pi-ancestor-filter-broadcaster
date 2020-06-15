@@ -41,6 +41,7 @@ Ext.define("PiAncestorFilterBroadcaster", {
             visibleTab: this.getSetting('defaultTab') || '',
             publisher: true,
             filtersHidden: false,
+            displayMultiLevelFilter: true,
             whiteListFields: ['Milestones', 'Tags', 'c_EnterpriseApprovalEA', 'c_EAEpic', 'DisplayColor'],
             settingsConfig: {
                 labelWidth: 200,
@@ -51,20 +52,37 @@ Ext.define("PiAncestorFilterBroadcaster", {
                 ready: function (plugin) {
                     plugin.addListener({
                         scope: this,
-                        select: function () { this._notifySubscribers('ancestor'); },
+                        select: function () {
+                            if (!this.settingView && this.down('#broadcasterSharedViewCombobox')) {
+                                this.down('#broadcasterSharedViewCombobox').setValue(null);
+                            }
+                            this._notifySubscribers('ancestor');
+                        },
                         change: this._onFilterChange
                     });
 
-                    this.down('#applyFilterBtnContainer').add({
+                    this.down('#applyFilterBtnContainer').add([{
                         xtype: 'rallybutton',
                         itemId: 'applyFiltersBtn',
                         handler: this._applyFilters,
                         text: 'Apply filters to apps',
                         cls: 'apply-filters-button',
                         disabled: true
-                    });
-
-                    this._notifySubscribers('ancestor');
+                    }, {
+                        xtype: 'rallysharedviewcombobox',
+                        title: 'Shared Views',
+                        itemId: 'broadcasterSharedViewCombobox',
+                        enableUrlSharing: true,
+                        context: this.getContext(),
+                        cmp: this,
+                        listeners: {
+                            scope: this,
+                            ready: function (combo) {
+                                combo.setValue(null);
+                                this._notifySubscribers('ancestor');
+                            }
+                        }
+                    }]);
                 },
             }
         });
@@ -76,7 +94,19 @@ Ext.define("PiAncestorFilterBroadcaster", {
     },
 
     _onFilterChange: function () {
-        this.down('#applyFiltersBtn').setDisabled(false);
+        // Multi-level filter will fire a change event 1.5 seconds after setting a view
+        // so we intercept that event and apply the filters
+        if (this.settingView) {
+            this.settingView = false;
+            this.setLoading(false);
+            this._applyFilters(this.down('#applyFiltersBtn'));
+        }
+        else {
+            this.down('#applyFiltersBtn').setDisabled(false);
+            if (this.down('#broadcasterSharedViewCombobox')) {
+                this.down('#broadcasterSharedViewCombobox').setValue(null);
+            }
+        }
     },
 
     _applyFilters: function (btn) {
@@ -127,5 +157,27 @@ Ext.define("PiAncestorFilterBroadcaster", {
             displayField: 'DisplayName',
             valueField: 'TypePath'
         }];
+    },
+
+    getCurrentView: function () {
+        return this.ancestorFilterPlugin.getCurrentView();
+    },
+
+    setCurrentView: function (view) {
+        this.settingView = true;
+        this.setLoading('Loading View...');
+        Ext.suspendLayouts();
+        this.suspendEvents(false);
+
+        let resumeFn = function () {
+            Ext.resumeLayouts(true);
+            this.resumeEvents();
+        }.bind(this);
+
+        if (this.ancestorFilterPlugin) {
+            this.ancestorFilterPlugin.setCurrentView(view);
+        }
+
+        setTimeout(resumeFn, 800);
     }
 });
